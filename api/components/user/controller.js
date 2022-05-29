@@ -28,7 +28,6 @@ module.exports = function (injectedStore) {
 			user.id = nanoid();
 		}
 
-		
 		if (body.password || body.username) {
 			await auth.upsert({
 				id: user.id,
@@ -36,13 +35,21 @@ module.exports = function (injectedStore) {
 				password: body.password,
 			});
 		}
-		
+
 		return store.upsert(TABLA, user);
+	}
+
+	function follow(from, to) {
+		return store.upsert(TABLA + '_follow', {
+			user_from: from,
+			user_to: to,
+		});
 	}
 
 	return {
 		list,
 		get,
 		upsert,
+		follow,
 	};
 };

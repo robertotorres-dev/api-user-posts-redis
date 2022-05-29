@@ -88,13 +88,18 @@ function update(table, data) {
 	});
 }
 
-function upsert(table, data) {
+const upsert = async function (table, data) {
+	let alreadyExist = [];
 	if (data && data.id) {
-		return update(table, data);
-	} else {
-		return insert(table, data);
+		alreadyExist = await get(table, data.id);
 	}
-}
+
+	if (alreadyExist.length === 0) {
+		return insert(table, data);
+	} else {
+		return update(table, data);
+	}
+};
 
 function query(table, query) {
 	return new Promise((resolve, reject) => {

@@ -21,6 +21,9 @@ const check = {
 			throw error('No puedes realizar esta acción', 401);
 		}
 	},
+	logged: function (req) {
+		const decoded = decodeHeader(req);
+	},
 };
 
 function getToken(auth) {

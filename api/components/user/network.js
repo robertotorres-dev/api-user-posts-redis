@@ -1,6 +1,6 @@
 const express = require('express');
 
-const middlewareSecure = require('./secure')
+const middlewareSecure = require('./secure');
 const response = require('../../../network/response');
 const Controller = require('./index');
 
@@ -11,34 +11,28 @@ router.get('/:id', get);
 router.post('/', upsert);
 router.put('/', middlewareSecure('update'), upsert);
 
-function list(req, res) {
+function list(req, res, next) {
 	Controller.list()
 		.then((lista) => {
 			response.success(req, res, lista, 200);
 		})
-		.catch((err) => {
-			response.error(req, res, err.message, 500);
-		});
+		.catch(next);
 }
 
-function get(req, res) {
+function get(req, res, next) {
 	Controller.get(req.params.id)
 		.then((user) => {
 			response.success(req, res, user, 200);
 		})
-		.catch((err) => {
-			response.error(req, res, err.message, 500);
-		});
+		.catch(next);
 }
 
-function upsert(req, res) {
+function upsert(req, res, next) {
 	Controller.upsert(req.body)
 		.then((userAdded) => {
 			response.success(req, res, userAdded, 201);
 		})
-		.catch((err) => {
-			response.error(req, res, err.message, 500);
-		});
+		.catch(next);
 }
 
 module.exports = router;

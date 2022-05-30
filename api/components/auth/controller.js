@@ -6,7 +6,7 @@ const TABLA = 'auth';
 module.exports = function (injectedStore) {
 	let store = injectedStore;
 	if (!store) {
-		store = require('../../../store/mysql');
+		store = require('../../../store/dummy');
 	}
 
 	async function login(username, password) {

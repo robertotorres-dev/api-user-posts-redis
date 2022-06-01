@@ -3,7 +3,6 @@ const middlewareSecure = require('./secure');
 
 const response = require('../../../network/response');
 const Controller = require('./index');
-const { nanoid } = require('nanoid');
 
 const router = express.Router();
 

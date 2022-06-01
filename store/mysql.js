@@ -18,7 +18,7 @@ function handleCon() {
 			console.error('[db err]', err);
 			setTimeout(handleCon, 2000);
 		}
-		console.log('DB Connected!');
+		console.log('DB Connectada!');
 	});
 
 	connection.on('error', (err) => {
@@ -76,6 +76,8 @@ async function query(table, q) {
 }
 
 function update(table, data) {
+	console.log(table);
+	console.log(data);
 	return new Promise((resolve, reject) => {
 		connection.query(
 			`UPDATE ${table} SET ? WHERE id=?`,

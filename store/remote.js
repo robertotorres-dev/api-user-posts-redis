@@ -12,7 +12,10 @@ function createRemoteDB(host, port) {
 	}
 
 	function upsert(table, data) {
-		return req('POST', table, data);
+		if (data.id) {
+			return update(table, data);
+		}
+		return insert(table, data);
 	}
 
 	/* 
@@ -68,7 +71,7 @@ function createRemoteDB(host, port) {
 							'content-type': 'application/json',
 						},
 						body,
-						json: true
+						json: true,
 					},
 					(err, req, body) => {
 						if (err) {

@@ -48,6 +48,9 @@ function get(table, id) {
 			`SELECT * FROM ${table} WHERE id = '${id}'`,
 			(err, data) => {
 				if (err) return reject(err);
+				if (data.size = 1) {
+					data = data[0];
+				}
 				resolve(data);
 			}
 		);

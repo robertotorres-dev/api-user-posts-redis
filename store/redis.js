@@ -17,19 +17,33 @@ async function list(table) {
 	try {
 		const data = await client.get(table);
 
+		let res = data || null;
 		if (data) {
 			res = JSON.parse(data);
-		} else {
-			res = data;
 		}
 
 		return res;
 	} catch (err) {
-		if (err) return err;
+		console.log(`Error: ${err}`);
+		return err;
 	}
 }
 
-function get(table, id) {}
+async function get(table, id) {
+	try {
+		let key = `${table}_${id}`;
+		const data = await client.get(key);
+
+		let res = data || null;
+		if (data) {
+			res = JSON.parse(data);
+		}
+		return res;
+	} catch (err) {
+		console.log(`Error: ${err}`);
+		return err;
+	}
+}
 
 async function upsert(table, data) {
 	let key = table;
@@ -37,7 +51,7 @@ async function upsert(table, data) {
 		key = key + '_' + data.id;
 	}
 
-	await client.setEx(key, 10, JSON.stringify(data));
+	await client.setEx(key, 20, JSON.stringify(data));
 
 	return true;
 }

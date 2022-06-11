@@ -3,18 +3,44 @@ const auth = require('../auth');
 
 const TABLA = 'user';
 
-module.exports = function (injectedStore) {
+module.exports = function (injectedStore, injectedCache) {
 	let store = injectedStore;
+	let cache = injectedCache;
+
 	if (!store) {
 		store = require('../../../store/dummy');
 	}
 
-	function list() {
-		return store.list(TABLA);
+	if (!cache) {
+		cache = require('../../../store/dummy');
 	}
 
-	function get(id) {
-		return store.get(TABLA, id);
+	async function list() {
+		let users = await cache.list(TABLA);
+
+		if (!users) {
+			console.log('No estaba en cache. Buscando en BD');
+			users = await store.list(TABLA);
+			await cache.upsert(TABLA, users);
+		} else {
+			console.log('Datos de cache');
+		}
+
+		return users;
+	}
+
+	async function get(id) {
+		user = await cache.get(TABLA, id);
+
+		if (!user) {
+			console.log('No estaba en cache. Buscando en BD');
+			user = await store.get(TABLA, id);
+			await cache.upsert(TABLA, user);
+		} else {
+			console.log('Datos de cache');
+		}
+
+		return user;
 	}
 
 	async function upsert(body) {
@@ -36,7 +62,7 @@ module.exports = function (injectedStore) {
 			});
 		}
 
-		return store.upsert(TABLA, user);
+		return await store.upsert(TABLA, user);
 	}
 
 	function follow(from, to) {
@@ -50,7 +76,7 @@ module.exports = function (injectedStore) {
 		const join = {};
 		join[TABLA] = 'user_to';
 		const query = { user_from: user };
-		
+
 		return await store.query(TABLA + '_follow', query, join);
 	}
 
